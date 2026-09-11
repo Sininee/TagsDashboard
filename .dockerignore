@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+.DS_Store
+.git
+.gitignore
+
+# User-specific/persistent data must never be baked into the container image.
+data/
+links.json
+settings.json
+icons/
+backgrounds/
+
+# Local archives/build exports.
+*.tar
+*.tar.gz
+*.zip

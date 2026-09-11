@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tags Dashboard</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <button id="openSettingsButton" class="settings-button" title="Settings">⚙</button>
+
+  <div class="status-bar">
+    <div class="status-card">
+      <div class="status-title">CPU usage</div>
+      <div id="cpuValue" class="status-value">Loading...</div>
+      <div class="status-track"><div id="cpuFill" class="status-fill"></div></div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-title">RAM usage</div>
+      <div id="ramValue" class="status-value">Loading...</div>
+      <div class="status-track"><div id="ramFill" class="status-fill"></div></div>
+    </div>
+
+    <div class="status-card">
+      <div class="status-title">Storage usage</div>
+      <div id="storageValue" class="status-value">Loading...</div>
+      <div class="status-track"><div id="storageFill" class="status-fill"></div></div>
+    </div>
+  </div>
+
+  <header>
+    <h1>Tags Dashboard</h1>
+    <div class="subtitle">Quickly open your saved webpages, server tools, and useful links.</div>
+  </header>
+
+  <main>
+    <div class="top-bar">
+      <input id="searchInput" type="text" placeholder="Search saved webpages..." />
+    </div>
+
+    <div id="tagRow" class="tag-row"></div>
+    <div id="grid" class="grid"></div>
+    <div id="empty" class="empty">No webpages found.</div>
+  </main>
+
+  <button id="openModalButton" class="plus-button" title="Add webpage">+</button>
+
+  <div id="settingsBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Settings</div>
+        <button id="closeSettingsButton" class="close-button" title="Close">×</button>
+      </div>
+
+      <div class="form-group">
+        <label class="toggle-row" for="systemInfoToggle">
+          <span>
+            <span class="toggle-title">Show system info</span>
+            <span class="toggle-description">Show or hide the CPU, RAM, and storage bar.</span>
+          </span>
+          <input id="systemInfoToggle" type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="toggle-row" for="hideIpToggle">
+          <span>
+            <span class="toggle-title">Hide IP addresses</span>
+            <span class="toggle-description">Hide or show the URL/IP address line on webpage cards.</span>
+          </span>
+          <input id="hideIpToggle" type="checkbox" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="backgroundFileInput">Dashboard background</label>
+        <input id="backgroundFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none;" />
+        <button type="button" id="chooseBackgroundButton" class="upload-button">Choose background picture</button>
+        <div id="selectedBackgroundName" class="hint">Supported background types: PNG, JPG, JPEG, WEBP, and SVG. Maximum file size: 20 MB.</div>
+      </div>
+
+      <button type="button" id="resetBackgroundButton" class="danger-button">Remove current background and use default</button>
+    </div>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <div id="linkModalTitle" class="modal-title">Add webpage</div>
+        <button id="closeModalButton" class="close-button" title="Close">×</button>
+      </div>
+
+      <form id="addWebpageForm">
+        <div class="form-group">
+          <label for="nameInput">Webpage name</label>
+          <input id="nameInput" type="text" placeholder="Example: Navidrome" autocomplete="off" />
+        </div>
+
+        <div class="form-group">
+          <label for="ipInput">IP address or webpage URL</label>
+          <input id="ipInput" type="text" placeholder="Example: 192.168.1.10:4533" autocomplete="off" />
+          <div class="hint">You can enter an IP, IP with port, or a full URL. If you do not add http://, it will be added automatically.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="tagsInput">Tags</label>
+          <input id="tagsInput" type="text" placeholder="Example: music, server" autocomplete="off" />
+          <div class="hint">Separate tags with commas. Example: music, server, docker. Use <strong>private</strong> to hide a webpage until the administrator selects #private. Use <strong>admin-only</strong> to show it normally to the administrator but hide it completely from visitors.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="iconFileInput">Icon picture</label>
+          <input id="iconFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml,image/x-icon" style="display:none;" />
+          <button type="button" id="chooseIconButton" class="upload-button">Choose icon picture</button>
+          <div id="selectedIconName" class="hint">Optional. Supported icon types: PNG, JPG, JPEG, WEBP, SVG, and ICO. Maximum file size: 20 MB.</div>
+        </div>
+
+        <div id="formError" class="error">Please add both a webpage name and an IP/URL.</div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelButton" class="cancel-button">Cancel</button>
+          <button type="submit" id="saveWebpageButton" class="save-button">Save webpage</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  tags-dashboard:
+    build: .
+    container_name: tags-dashboard
+    ports:
+      - "7000:7000" # Administrator
+      - "7002:7002" # Guest / read-only
+    environment:
+      TAGSSERVER_DATA_DIR: /app/data
+      GUEST_PORT: 7002
+    volumes:
+      # Keep all links, uploaded icons, and settings outside the source tree.
+      - ${TAGSSERVER_DATA_PATH:-./data}:/app/data
+    restart: unless-stopped

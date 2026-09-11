@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Persistent/user data
+data/
+links.json
+settings.json
+config.json
+icons/
+backgrounds/
+
+# Container/build exports
+*.tar
+*.tar.gz
+*.zip
+
+# Logs and local tooling
+npm-debug.log*
+*.log
+.DS_Store
+.vscode/
+.idea/

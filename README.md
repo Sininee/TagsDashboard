@@ -385,7 +385,11 @@ These may contain saved URLs, local addresses, uploaded images, or other informa
 
 ## 📜 License
 
-See the `LICENSE` file for licensing information.
+Tags Dashboard is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+
+You are free to use, study, modify, and redistribute the project under the terms of the GPL v3.0. If you distribute modified versions, those versions must also remain licensed under the GPL v3.0 and the corresponding source code must be made available under the same terms.
+
+See the [`LICENSE`](./LICENSE) file for the full license text.
 
 ---
 

@@ -127,7 +127,52 @@ Tags Dashboard includes two special tags:
 - **`admin-only`** — visible normally to the administrator but completely omitted from the guest API.
 
 > [!IMPORTANT]
-> Tags Dashboard does **not** currently include built-in authentication. Port `7000` should be treated as a trusted administrator interface. Do not expose it directly to the public Internet without an authentication or reverse-proxy layer.
+> Tags Dashboard does **not** currently include built-in authentication. Port `7000` should be treated as a trusted administrator interface. Do not expose it directly to the public Internet. Use restricted Tailscale access or an authenticated HTTPS reverse proxy as described below.
+
+## 🔒 Secure remote access
+
+### Bind container ports to localhost
+
+For a Tailscale or reverse proxy running on the **same host**, replace the two `-p` options in the Docker command above (or your Podman command) with:
+
+```bash
+  -p 127.0.0.1:7000:7000 \
+  -p 127.0.0.1:7002:7002 \
+```
+
+Recreate an existing container with these mappings, keeping the same persistent data mount. In Compose, use `"127.0.0.1:7000:7000"` and `"127.0.0.1:7002:7002"` under `ports`. Do not forward either backend port on your router. Remote clients use the HTTPS endpoints below instead of `YOUR-SERVER-IP:7000`.
+
+### Option A: Tailscale HTTPS (recommended for private access)
+
+Install Tailscale on the server and client devices, sign them into your tailnet, and enable MagicDNS and HTTPS as prompted. Run on the server:
+
+```bash
+sudo tailscale serve --bg --https=443 http://127.0.0.1:7000
+sudo tailscale serve --bg --https=8443 http://127.0.0.1:7002
+tailscale serve status
+```
+
+Use the `https://YOUR-SERVER.YOUR-TAILNET.ts.net` URL shown by Serve for administration; share only the separate `https://YOUR-SERVER.YOUR-TAILNET.ts.net:8443` URL with guests. Serve is private to the tailnet; **do not use Tailscale Funnel for the administrator interface**.
+
+Configure tailnet grants/ACLs so only trusted administrators can reach this server's TCP port `443`, while intended guests can reach TCP port `8443`. Remove any broader rule that would also give guests access to `443`; tailnet membership alone does not separate administrators from guests. If these HTTPS ports already serve another application, choose unused ports and update the URLs and access rules accordingly.
+
+See the [Tailscale Serve documentation](https://tailscale.com/docs/reference/tailscale-cli/serve).
+
+### Option B: An authenticated HTTPS reverse proxy
+
+With a host-installed proxy such as Caddy or Nginx, configure two separate hostnames:
+
+| HTTPS endpoint | Backend | Access |
+| --- | --- | --- |
+| `tags-admin.example.com` | `http://127.0.0.1:7000` | Require authentication for **every path**, including `/api/*`, and allow only trusted administrators |
+| `tags.example.com` | `http://127.0.0.1:7002` | Guest view; restrict its audience as needed |
+
+Point DNS at your server, configure valid TLS certificates, and expose only the proxy's HTTPS port `443` (plus `80` if needed for certificate issuance or HTTPS redirects). Use the proxy's authentication feature or an authentication gateway; **TLS or a reverse proxy alone does not provide administrator authentication**. Never route the guest hostname or its API requests to port `7000`.
+
+If the proxy runs in a container, `127.0.0.1` refers to that proxy container. Use a private container network and the dashboard container's name with ports `7000`/`7002` as upstreams instead, without publishing the dashboard ports to the host.
+
+> [!WARNING]
+> Anyone who can reach port `7000`, directly or through a proxy, has full administrator access without an application login. Grant access only to trusted administrators. The guest port is read-only, but its visible links, uploaded assets, and system information should still be treated as shared information.
 
 ## 💾 Persistent data
 
